@@ -6,3 +6,22 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# IDEs & Tools
+.claude/
+.code-review-graph/
+.codex/
+.cursor/
+.swiftpm/
+
+# Unused Targets
+CashflowExtension/
+
+# Docs & Design
+docs/*
+!docs/previews/
+design.md
+product.md
+
+# Credentials & Secrets
+Secrets.plist

@@ -1,17 +1,17 @@
-//
-//  cashflowApp.swift
-//  cashflow
-//
-//  Created by Daiva Geralda on 10/07/26.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct cashflowApp: App {
+    @StateObject private var environment = AppEnvironment.shared
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(environment)
+                .modelContainer(PersistenceController.shared.container)
         }
     }
 }
+
+

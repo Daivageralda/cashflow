@@ -56,56 +56,44 @@ Most finance apps feel like spreadsheets in disguise. Cashflow is different. It'
 <table align="center">
   <tr>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2272.PNG" alt="Onboarding 1" /><br />
-      <sub><b>Onboarding 1</b></sub>
+      <img src="docs/previews/IMG_2272.PNG" alt="Onboarding 1" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2273.PNG" alt="Onboarding 2" /><br />
-      <sub><b>Onboarding 2</b></sub>
+      <img src="docs/previews/IMG_2273.PNG" alt="Onboarding 2" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2274.PNG" alt="Passcode Lock" /><br />
-      <sub><b>Security Lock</b></sub>
+      <img src="docs/previews/IMG_2274.PNG" alt="Passcode Lock" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2275.PNG" alt="Dashboard" /><br />
-      <sub><b>Dashboard Hub</b></sub>
+      <img src="docs/previews/IMG_2275.PNG" alt="Dashboard" />
     </td>
   </tr>
   <tr>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2276.PNG" alt="Transactions List" /><br />
-      <sub><b>Transactions</b></sub>
+      <img src="docs/previews/IMG_2276.PNG" alt="Transactions List" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2278.PNG" alt="Category Budgets" /><br />
-      <sub><b>Budgets</b></sub>
+      <img src="docs/previews/IMG_2278.PNG" alt="Category Budgets" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2279.PNG" alt="AI Advisor Feed" /><br />
-      <sub><b>AI Advisor</b></sub>
+      <img src="docs/previews/IMG_2279.PNG" alt="AI Advisor Feed" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2280.PNG" alt="Bills Reminders" /><br />
-      <sub><b>Bill Trackers</b></sub>
+      <img src="docs/previews/IMG_2280.PNG" alt="Bills Reminders" />
     </td>
   </tr>
   <tr>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2281.PNG" alt="Reports View" /><br />
-      <sub><b>Spending Reports</b></sub>
+      <img src="docs/previews/IMG_2281.PNG" alt="Reports View" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2282.PNG" alt="OCR Scan Receipt" /><br />
-      <sub><b>OCR Scanner</b></sub>
+      <img src="docs/previews/IMG_2282.PNG" alt="OCR Scan Receipt" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2283.PNG" alt="Home Screen Widget" /><br />
-      <sub><b>Active Widgets</b></sub>
+      <img src="docs/previews/IMG_2283.PNG" alt="Home Screen Widget" />
     </td>
     <td align="center" width="25%">
-      <img src="docs/previews/IMG_2277.PNG" alt="Feature Overview" /><br />
-      <sub><b>Interactive Feed</b></sub>
+      <img src="docs/previews/IMG_2277.PNG" alt="Feature Overview" />
     </td>
   </tr>
 </table>

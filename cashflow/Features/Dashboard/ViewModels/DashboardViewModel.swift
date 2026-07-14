@@ -46,6 +46,8 @@ final class DashboardViewModel {
 
         if let sharedDefaults = UserDefaults(suiteName: "group.com.dumeg.cashflow") {
             sharedDefaults.set(totalBalance, forKey: "totalBalance")
+            // Pass mode flag so widget adapts its content
+            sharedDefaults.set(isExpenseOnly, forKey: "isExpenseOnlyMode")
         }
     }
 
@@ -55,6 +57,19 @@ final class DashboardViewModel {
         )
         descriptor.fetchLimit = 5
         recentTransactions = (try? modelContext.fetch(descriptor)) ?? []
+
+        // Write last transaction details for widget display
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.dumeg.cashflow") {
+            let last = recentTransactions.first
+            sharedDefaults.set(last?.note ?? "", forKey: "lastTransactionName")
+            sharedDefaults.set(last?.amount ?? 0.0, forKey: "lastTransactionAmount")
+            sharedDefaults.set(last?.type == .income ? "income" : "expense", forKey: "lastTransactionType")
+            if let lastDate = last?.date {
+                sharedDefaults.set(lastDate, forKey: "lastTransactionDate")
+            } else {
+                sharedDefaults.removeObject(forKey: "lastTransactionDate")
+            }
+        }
     }
 
     private func loadBudgetSnapshots() {
@@ -81,9 +96,19 @@ final class DashboardViewModel {
         }
         .sorted { $0.ratio > $1.ratio }
 
+        // Count monthly expense transactions
+        let allDescriptor = FetchDescriptor<Transaction>()
+        let allTx = (try? modelContext.fetch(allDescriptor)) ?? []
+        let monthlyExpenseCount = allTx.filter {
+            $0.type == .expense &&
+            calendar.component(.month, from: $0.date) == currentMonth &&
+            calendar.component(.year, from: $0.date) == currentYear
+        }.count
+
         let totalSpent = budgetSnapshots.reduce(0.0) { $0 + $1.spent }
         if let sharedDefaults = UserDefaults(suiteName: "group.com.dumeg.cashflow") {
             sharedDefaults.set(totalSpent, forKey: "totalSpent")
+            sharedDefaults.set(monthlyExpenseCount, forKey: "monthlyExpenseCount")
             WidgetCenter.shared.reloadAllTimelines()
         }
     }

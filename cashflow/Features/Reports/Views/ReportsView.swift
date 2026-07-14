@@ -7,6 +7,7 @@ struct ReportsView: View {
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var viewModel: ReportsViewModel?
     @State private var selectedSegment: Int = 0
+    @AppStorage("enable_ai_advisor") private var enableAIAdvisor: Bool = true
 
     var body: some View {
         NavigationStack {
@@ -25,7 +26,9 @@ struct ReportsView: View {
                         VStack(spacing: Spacing.s24) {
                             if let vm = viewModel {
                                 // Card Insight
-                                insightCard(message: vm.generatedInsight)
+                                if enableAIAdvisor {
+                                    insightCard(message: vm.generatedInsight)
+                                }
 
                                 // Chart 1: Donut Breakdown
                                 categoryBreakdownSection(reports: vm.categoryReports)

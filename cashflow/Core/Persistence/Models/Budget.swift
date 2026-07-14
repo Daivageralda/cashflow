@@ -9,6 +9,13 @@ final class Budget {
     var year: Int
     var period: String = "monthly" // "monthly" or "weekly"
     var weekStartDate: Date?
+    var updatedAt: Date?
+    var syncStateValue: String = SyncState.pendingUpload.rawValue
+
+    var syncState: SyncState {
+        get { SyncState(rawValue: syncStateValue) ?? .pendingUpload }
+        set { syncStateValue = newValue.rawValue }
+    }
 
     @Relationship(deleteRule: .nullify)
     var category: Category?
@@ -27,6 +34,7 @@ final class Budget {
         self.year = year
         self.period = period
         self.weekStartDate = weekStartDate
+        self.updatedAt = .now
         self.category = category
     }
 }

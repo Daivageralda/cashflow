@@ -10,6 +10,7 @@ struct DashboardView: View {
     @State private var showAIAdvisor: Bool = false
 
     @AppStorage("use_expense_only_mode") private var useExpenseOnlyMode: Bool = false
+    @AppStorage("enable_ai_advisor") private var enableAIAdvisor: Bool = true
 
     private var userName: String {
         UserDefaults.standard.string(forKey: "user_name") ?? "Kamu"
@@ -21,7 +22,7 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: Spacing.s24) {
                     balanceHeroCard
 
-                    if let vm = viewModel {
+                    if enableAIAdvisor, let vm = viewModel {
                         QuickInsightCardView(message: vm.todayInsight)
                             .padding(.horizontal, Spacing.s16)
                     }
@@ -54,11 +55,13 @@ struct DashboardView: View {
                                 .foregroundStyle(Color.textSecondary)
                         }
 
-                        Button {
-                            showAIAdvisor = true
-                        } label: {
-                            Image(systemName: "sparkles")
-                                .foregroundStyle(Color.textSecondary)
+                        if enableAIAdvisor {
+                            Button {
+                                showAIAdvisor = true
+                            } label: {
+                                Image(systemName: "sparkles")
+                                    .foregroundStyle(Color.textSecondary)
+                            }
                         }
                     }
                 }

@@ -19,6 +19,7 @@ final class PersistenceController {
         do {
             container = try ModelContainer(for: schema, configurations: [config])
             seedSystemCategoriesIfNeeded()
+            SyncEngine.shared.setup(with: container)
         } catch {
             fatalError("SwiftData ModelContainer init failed: \(error)")
         }

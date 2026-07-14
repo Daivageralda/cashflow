@@ -12,6 +12,7 @@
 		41292286300140F900594137 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 412922693001405700594137 /* WidgetKit.framework */; };
 		41292287300140F900594137 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4129226B3001405800594137 /* SwiftUI.framework */; };
 		412922A23001444000594137 /* CashFlow WidgetExtension.appex in CopyFiles */ = {isa = PBXBuildFile; fileRef = 412922673001405700594137 /* CashFlow WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		41D143C23005DB8C009C64DD /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 41D143C13005DB8C009C64DD /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41D143C23005DB8C009C64DD /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,6 +225,7 @@
 			);
 			name = cashflow;
 			packageProductDependencies = (
+				41D143C13005DB8C009C64DD /* Supabase */,
 			);
 			productName = cashflow;
 			productReference = 419379B230012377007E90B6 /* cashflow.app */;
@@ -258,6 +261,9 @@
 			);
 			mainGroup = 419379A930012377007E90B6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				41D143C03005DAFF009C64DD /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 419379B330012377007E90B6 /* Products */;
 			projectDirPath = "";
@@ -692,6 +698,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		41D143C03005DAFF009C64DD /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		41D143C13005DB8C009C64DD /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41D143C03005DAFF009C64DD /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 419379AA30012377007E90B6 /* Project object */;
 }

@@ -9,8 +9,17 @@ final class Bill {
     var dueDay: Int             // 1–31
     var isRecurring: Bool
     var lastPaidAt: Date?
+    
+    @Attribute
     var notificationIdentifiers: [String]
     var category: Category?
+    var updatedAt: Date?
+    var syncStateValue: String = SyncState.pendingUpload.rawValue
+
+    var syncState: SyncState {
+        get { SyncState(rawValue: syncStateValue) ?? .pendingUpload }
+        set { syncStateValue = newValue.rawValue }
+    }
 
     init(name: String, amount: Double, dueDay: Int, isRecurring: Bool = true, category: Category? = nil) {
         self.id = UUID()
@@ -21,6 +30,7 @@ final class Bill {
         self.lastPaidAt = nil
         self.notificationIdentifiers = []
         self.category = category
+        self.updatedAt = .now
     }
 
     var dueDate: Date {

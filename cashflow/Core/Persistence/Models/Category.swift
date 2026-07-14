@@ -9,6 +9,13 @@ final class Category {
     var colorHex: String    // hex string
     var isSystem: Bool      // true = system default, false = custom
     var sortOrder: Int
+    var updatedAt: Date?
+    var syncStateValue: String = SyncState.pendingUpload.rawValue
+
+    var syncState: SyncState {
+        get { SyncState(rawValue: syncStateValue) ?? .pendingUpload }
+        set { syncStateValue = newValue.rawValue }
+    }
 
     @Relationship(deleteRule: .nullify, inverse: \Transaction.category)
     var transactions: [Transaction]
@@ -23,6 +30,7 @@ final class Category {
         self.colorHex = colorHex
         self.isSystem = isSystem
         self.sortOrder = sortOrder
+        self.updatedAt = .now
         self.transactions = []
         self.budgets = []
     }

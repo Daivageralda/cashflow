@@ -6,6 +6,12 @@ enum TransactionType: String, Codable, CaseIterable {
     case expense = "expense"
 }
 
+enum SyncState: String, Codable {
+    case synced = "synced"
+    case pendingUpload = "pendingUpload"
+    case pendingDelete = "pendingDelete"
+}
+
 @Model
 final class Transaction {
     var id: UUID
@@ -14,6 +20,14 @@ final class Transaction {
     var note: String
     var date: Date
     var createdAt: Date
+    var updatedAt: Date?
+    var syncStateValue: String = SyncState.pendingUpload.rawValue
+    var remoteImagePath: String?
+
+    var syncState: SyncState {
+        get { SyncState(rawValue: syncStateValue) ?? .pendingUpload }
+        set { syncStateValue = newValue.rawValue }
+    }
 
     var latitude: Double?
     var longitude: Double?
@@ -42,6 +56,7 @@ final class Transaction {
         self.note = note
         self.date = date
         self.createdAt = .now
+        self.updatedAt = .now
         self.category = category
         self.latitude = latitude
         self.longitude = longitude

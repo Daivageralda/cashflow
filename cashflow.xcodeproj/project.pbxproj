@@ -586,9 +586,11 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cashflow memerlukan akses kamera untuk mengambil foto struk belanjaan.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Cashflow menggunakan Face ID untuk melindungi data keuanganmu.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Cashflow memerlukan akses lokasi untuk menambahkan tag lokasi pada transaksi Anda.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Cashflow memerlukan akses galeri untuk mengimpor foto struk.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen = "{\n    UIImageName = LaunchImage;\n}";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -624,9 +626,11 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cashflow memerlukan akses kamera untuk mengambil foto struk belanjaan.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Cashflow menggunakan Face ID untuk melindungi data keuanganmu.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Cashflow memerlukan akses lokasi untuk menambahkan tag lokasi pada transaksi Anda.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Cashflow memerlukan akses galeri untuk mengimpor foto struk.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen = "{\n    UIImageName = LaunchImage;\n}";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

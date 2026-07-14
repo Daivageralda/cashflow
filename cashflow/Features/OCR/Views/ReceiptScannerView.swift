@@ -159,7 +159,10 @@ struct ReceiptScannerView: View {
                 AddTransactionView(
                     prefillAmount: parsedAmount,
                     prefillNote: parsedMerchant,
-                    prefillCategoryName: parsedCategoryName
+                    prefillCategoryName: parsedCategoryName,
+                    onSuccess: {
+                        dismiss()
+                    }
                 )
             }
         }

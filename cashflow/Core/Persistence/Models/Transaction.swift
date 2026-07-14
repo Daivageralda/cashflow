@@ -15,6 +15,13 @@ final class Transaction {
     var date: Date
     var createdAt: Date
 
+    var latitude: Double?
+    var longitude: Double?
+    var locationName: String?
+
+    @Attribute(.externalStorage)
+    var attachmentImageData: Data?
+
     @Relationship(deleteRule: .nullify)
     var category: Category?
 
@@ -23,7 +30,11 @@ final class Transaction {
         type: TransactionType,
         note: String = "",
         date: Date = .now,
-        category: Category? = nil
+        category: Category? = nil,
+        latitude: Double? = nil,
+        longitude: Double? = nil,
+        locationName: String? = nil,
+        attachmentImageData: Data? = nil
     ) {
         self.id = UUID()
         self.amount = amount
@@ -32,5 +43,9 @@ final class Transaction {
         self.date = date
         self.createdAt = .now
         self.category = category
+        self.latitude = latitude
+        self.longitude = longitude
+        self.locationName = locationName
+        self.attachmentImageData = attachmentImageData
     }
 }

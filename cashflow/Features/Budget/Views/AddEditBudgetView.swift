@@ -10,6 +10,8 @@ struct AddEditBudgetView: View {
 
     @State private var limitText: String = ""
     @State private var selectedCategory: Category? = nil
+    @State private var selectedPeriod: String = "monthly"
+    @State private var weekStartDate: Date = Date.now
 
     @Query(sort: \Category.sortOrder) private var categories: [Category]
 
@@ -32,6 +34,22 @@ struct AddEditBudgetView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section("Tipe Periode") {
+                    Picker("Periode", selection: $selectedPeriod) {
+                        Text("Bulanan").tag("monthly")
+                        Text("Mingguan").tag("weekly")
+                    }
+                    .pickerStyle(.segmented)
+                    .disabled(isEditMode)
+
+                    if selectedPeriod == "weekly" {
+                        DatePicker("Mulai Tanggal", selection: $weekStartDate, displayedComponents: .date)
+                            .onChange(of: weekStartDate) { _, newValue in
+                                weekStartDate = alignToStartOfWeek(newValue)
+                            }
+                    }
+                }
+
                 Section("Detail Anggaran") {
                     HStack {
                         Text("Limit Rp")
@@ -69,21 +87,39 @@ struct AddEditBudgetView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.large])
         .presentationCornerRadius(Radius.xl)
         .onAppear {
             if let budget {
                 limitText = String(Int(budget.limit))
                 selectedCategory = budget.category
+                selectedPeriod = budget.period
+                if let wsd = budget.weekStartDate {
+                    weekStartDate = wsd
+                }
+            } else {
+                selectedPeriod = viewModel.selectedPeriod
+                weekStartDate = alignToStartOfWeek(viewModel.selectedWeekStart)
             }
         }
+    }
+
+    private func alignToStartOfWeek(_ date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return calendar.date(from: components) ?? date
     }
 
     private func save() {
         if let budget {
             viewModel.updateBudget(budget, limit: limit)
         } else if let category = selectedCategory {
-            viewModel.addBudget(limit: limit, category: category)
+            viewModel.addBudget(
+                limit: limit,
+                category: category,
+                period: selectedPeriod,
+                weekStartDate: selectedPeriod == "weekly" ? weekStartDate : nil
+            )
         }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         dismiss()

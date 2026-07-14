@@ -23,6 +23,21 @@ struct BudgetDetailView: View {
         }, sort: \Transaction.date, order: .reverse)
     }
 
+    private var filteredTransactions: [Transaction] {
+        let calendar = Calendar.current
+        return transactions.filter { tx in
+            guard tx.type == .expense else { return false }
+            if budgetStatus.budget.period == "weekly" {
+                guard let weekStart = budgetStatus.budget.weekStartDate else { return false }
+                let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+                return tx.date >= weekStart && tx.date < weekEnd
+            } else {
+                return calendar.component(.month, from: tx.date) == budgetStatus.budget.month &&
+                       calendar.component(.year, from: tx.date) == budgetStatus.budget.year
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -55,12 +70,12 @@ struct BudgetDetailView: View {
                 }
 
                 Section("Riwayat Transaksi Kategori") {
-                    if transactions.isEmpty {
+                    if filteredTransactions.isEmpty {
                         Text("Belum ada transaksi di kategori ini.")
                             .font(.cashflowFootnote)
                             .foregroundStyle(Color.textTertiary)
                     } else {
-                        ForEach(transactions) { tx in
+                        ForEach(filteredTransactions) { tx in
                             HStack {
                                 VStack(alignment: .leading, spacing: Spacing.s4) {
                                     Text(tx.note.isEmpty ? "Belum ada catatan" : tx.note)

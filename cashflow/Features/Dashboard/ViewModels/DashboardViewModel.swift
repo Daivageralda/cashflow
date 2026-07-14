@@ -35,8 +35,13 @@ final class DashboardViewModel {
         let descriptor = FetchDescriptor<Transaction>()
         let all = (try? modelContext.fetch(descriptor)) ?? []
 
-        totalBalance = all.reduce(0.0) { result, tx in
-            tx.type == .income ? result + tx.amount : result - tx.amount
+        let isExpenseOnly = UserDefaults.standard.bool(forKey: "use_expense_only_mode")
+        if isExpenseOnly {
+            totalBalance = all.filter { $0.type == .expense }.reduce(0.0) { $0 + $1.amount }
+        } else {
+            totalBalance = all.reduce(0.0) { result, tx in
+                tx.type == .income ? result + tx.amount : result - tx.amount
+            }
         }
 
         if let sharedDefaults = UserDefaults(suiteName: "group.com.dumeg.cashflow") {

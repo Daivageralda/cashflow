@@ -35,7 +35,9 @@ struct TransactionListView: View {
                                                 .onTapGesture { selectedTransaction = tx }
                                                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                                     Button(role: .destructive) {
-                                                        vm.delete(tx)
+                                                        withAnimation {
+                                                            vm.delete(tx)
+                                                        }
                                                         UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                                                     } label: {
                                                         Label("Hapus", systemImage: "trash")
@@ -75,7 +77,9 @@ struct TransactionListView: View {
             }
             .sheet(item: $selectedTransaction) { tx in
                 TransactionDetailView(transaction: tx, onDelete: {
-                    viewModel?.delete(tx)
+                    withAnimation {
+                        viewModel?.delete(tx)
+                    }
                     selectedTransaction = nil
                 })
             }

@@ -4,27 +4,58 @@ import SwiftData
 
 struct ReportsView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var viewModel: ReportsViewModel?
+    @State private var selectedSegment: Int = 0
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.s24) {
-                    if let vm = viewModel {
-                        // Card Insight
-                        insightCard(message: vm.generatedInsight)
+            VStack(spacing: 0) {
+                Picker("Mode", selection: $selectedSegment) {
+                    Text("Analitik").tag(0)
+                    Text("Koleksi Stiker").tag(1)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, Spacing.s16)
+                .padding(.top, Spacing.s12)
+                .padding(.bottom, Spacing.s8)
+                
+                if selectedSegment == 0 {
+                    ScrollView {
+                        VStack(spacing: Spacing.s24) {
+                            if let vm = viewModel {
+                                // Card Insight
+                                insightCard(message: vm.generatedInsight)
 
-                        // Chart 1: Donut Breakdown
-                        categoryBreakdownSection(reports: vm.categoryReports)
+                                // Chart 1: Donut Breakdown
+                                categoryBreakdownSection(reports: vm.categoryReports)
 
-                        // Chart 2: Daily Trend Line
-                        dailyTrendSection(trends: vm.dailyTrends)
+                                // Chart 2: Daily Trend Line
+                                dailyTrendSection(trends: vm.dailyTrends)
 
-                        // Chart 3: Monthly Comparison Bars
-                        monthlyComparisonSection(comparisons: vm.monthlyComparisons)
+                                // Chart 3: Monthly Comparison Bars
+                                monthlyComparisonSection(comparisons: vm.monthlyComparisons)
+                            }
+                        }
+                        .padding(Spacing.s16)
+                    }
+                } else {
+                    GeometryReader { geo in
+                        VStack(alignment: .leading, spacing: Spacing.s16) {
+                            Text("Stiker Transaksi Bulan Ini")
+                                .font(.cashflowSubheadline)
+                                .foregroundStyle(Color.textSecondary)
+                                .padding(.horizontal, Spacing.s16)
+                                .padding(.top, Spacing.s8)
+                            
+                            StickerPilePhysicsView(
+                                transactions: transactions,
+                                canvasHeight: min(560, max(280, geo.size.height * 0.75))
+                            )
+                            .padding(.horizontal, Spacing.s16)
+                        }
                     }
                 }
-                .padding(Spacing.s16)
             }
             .background(Color.bgPrimary)
             .navigationTitle("Laporan Analitik")

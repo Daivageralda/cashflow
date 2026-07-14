@@ -16,13 +16,10 @@ struct AuthLockView: View {
             Spacer()
 
             VStack(spacing: Spacing.s16) {
-                Image(systemName: "arrow.left.arrow.right.circle.fill")
-                    .font(.system(size: 64, weight: .light))
-                    .foregroundStyle(Color.accentPrimary)
-
-                Text("Cashflow")
-                    .font(.cashflowTitle1)
-                    .foregroundStyle(Color.textPrimary)
+                Image("AppLogo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
 
                 Text("Masuk untuk melanjutkan")
                     .font(.cashflowBody)

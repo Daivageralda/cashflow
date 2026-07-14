@@ -11,23 +11,47 @@ struct BudgetListView: View {
         NavigationStack {
             Group {
                 if let vm = viewModel {
-                    if vm.budgets.isEmpty {
-                        EmptyStateView(
-                            icon: "target",
-                            title: "Belum ada budget",
-                            description: "Buat budget pengeluaran per kategori untuk membatasi pengeluaran bulananmu.",
-                            actionTitle: "Buat Budget Pertama",
-                            action: { showAddBudget = true }
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        ScrollView {
-                            VStack(spacing: Spacing.s24) {
-                                overallSummaryCard(vm: vm)
+                    @Bindable var bindableVM = vm
+                    VStack(spacing: 0) {
+                        Picker("Periode", selection: $bindableVM.selectedPeriod) {
+                            Text("Bulanan").tag("monthly")
+                            Text("Mingguan").tag("weekly")
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal, Spacing.s16)
+                        .padding(.bottom, Spacing.s12)
+                        .onChange(of: vm.selectedPeriod) { _, _ in
+                            vm.refresh()
+                        }
 
-                                budgetListSection(vm: vm)
+                        if vm.selectedPeriod == "weekly" {
+                            weekSelector(vm: vm)
+                                .padding(.bottom, Spacing.s12)
+                        } else {
+                            monthSelector(vm: vm)
+                                .padding(.bottom, Spacing.s12)
+                        }
+
+                        if vm.budgets.isEmpty {
+                            EmptyStateView(
+                                icon: "target",
+                                title: "Belum ada budget",
+                                description: vm.selectedPeriod == "weekly"
+                                    ? "Buat budget pengeluaran per kategori untuk membatasi pengeluaran mingguanmu."
+                                    : "Buat budget pengeluaran per kategori untuk membatasi pengeluaran bulananmu.",
+                                actionTitle: "Buat Budget Pertama",
+                                action: { showAddBudget = true }
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        } else {
+                            ScrollView {
+                                VStack(spacing: Spacing.s24) {
+                                    overallSummaryCard(vm: vm)
+
+                                    budgetListSection(vm: vm)
+                                }
+                                .padding(.vertical, Spacing.s16)
                             }
-                            .padding(.vertical, Spacing.s16)
                         }
                     }
                 }
@@ -68,11 +92,116 @@ struct BudgetListView: View {
         }
     }
 
+    private func weekSelector(vm: BudgetViewModel) -> some View {
+        HStack {
+            Button {
+                adjustWeek(vm: vm, days: -7)
+            } label: {
+                Image(systemName: "chevron.left")
+                    .padding(Spacing.s8)
+                    .background(Color.bgSecondary, in: Circle())
+            }
+            .foregroundStyle(Color.textPrimary)
+
+            Spacer()
+
+            Text(weekRangeString(from: vm.selectedWeekStart))
+                .font(.cashflowSubheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.textPrimary)
+
+            Spacer()
+
+            Button {
+                adjustWeek(vm: vm, days: 7)
+            } label: {
+                Image(systemName: "chevron.right")
+                    .padding(Spacing.s8)
+                    .background(Color.bgSecondary, in: Circle())
+            }
+            .foregroundStyle(Color.textPrimary)
+        }
+        .padding(.horizontal, Spacing.s16)
+    }
+
+    private func adjustWeek(vm: BudgetViewModel, days: Int) {
+        let calendar = Calendar.current
+        if let newDate = calendar.date(byAdding: .day, value: days, to: vm.selectedWeekStart) {
+            vm.changeWeek(weekStart: newDate)
+        }
+    }
+
+    private func weekRangeString(from start: Date) -> String {
+        let calendar = Calendar.current
+        let end = calendar.date(byAdding: .day, value: 6, to: start) ?? start
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM yyyy"
+        return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
+    }
+
+    private func monthSelector(vm: BudgetViewModel) -> some View {
+        HStack {
+            Button {
+                adjustMonth(vm: vm, delta: -1)
+            } label: {
+                Image(systemName: "chevron.left")
+                    .padding(Spacing.s8)
+                    .background(Color.bgSecondary, in: Circle())
+            }
+            .foregroundStyle(Color.textPrimary)
+
+            Spacer()
+
+            Text(monthString(month: vm.selectedMonth, year: vm.selectedYear))
+                .font(.cashflowSubheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.textPrimary)
+
+            Spacer()
+
+            Button {
+                adjustMonth(vm: vm, delta: 1)
+            } label: {
+                Image(systemName: "chevron.right")
+                    .padding(Spacing.s8)
+                    .background(Color.bgSecondary, in: Circle())
+            }
+            .foregroundStyle(Color.textPrimary)
+        }
+        .padding(.horizontal, Spacing.s16)
+    }
+
+    private func adjustMonth(vm: BudgetViewModel, delta: Int) {
+        var newMonth = vm.selectedMonth + delta
+        var newYear = vm.selectedYear
+        if newMonth > 12 {
+            newMonth = 1
+            newYear += 1
+        } else if newMonth < 1 {
+            newMonth = 12
+            newYear -= 1
+        }
+        vm.changePeriod(month: newMonth, year: newYear)
+    }
+
+    private func monthString(month: Int, year: Int) -> String {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.month = month
+        components.year = year
+        if let date = calendar.date(from: components) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMMM yyyy"
+            return formatter.string(from: date)
+        }
+        return "\(month) / \(year)"
+    }
+
     private func overallSummaryCard(vm: BudgetViewModel) -> some View {
         let totalRatio = vm.totalBudgetLimit > 0 ? vm.totalSpent / vm.totalBudgetLimit : 0.0
 
         return VStack(alignment: .leading, spacing: Spacing.s16) {
-            Text("Pengeluaran Bulanan vs Total Budget")
+            Text(vm.selectedPeriod == "weekly" ? "Pengeluaran Mingguan vs Total Budget" : "Pengeluaran Bulanan vs Total Budget")
                 .font(.cashflowSubheadline)
                 .foregroundStyle(Color.textSecondary)
 

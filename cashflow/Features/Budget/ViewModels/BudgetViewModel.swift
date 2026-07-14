@@ -20,6 +20,8 @@ final class BudgetViewModel {
     var totalSpent: Double = 0
     var selectedMonth: Int
     var selectedYear: Int
+    var selectedPeriod: String = "monthly" // "monthly" or "weekly"
+    var selectedWeekStart: Date
 
     private let modelContext: ModelContext
 
@@ -29,13 +31,14 @@ final class BudgetViewModel {
         let now = Date.now
         self.selectedMonth = calendar.component(.month, from: now)
         self.selectedYear = calendar.component(.year, from: now)
+
+        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)
+        self.selectedWeekStart = calendar.date(from: components) ?? now
         refresh()
     }
 
     func refresh() {
-        let descriptor = FetchDescriptor<Budget>(
-            predicate: #Predicate { $0.month == selectedMonth && $0.year == selectedYear }
-        )
+        let descriptor = FetchDescriptor<Budget>()
         let rawBudgets = (try? modelContext.fetch(descriptor)) ?? []
 
         let calendar = Calendar.current
@@ -44,15 +47,30 @@ final class BudgetViewModel {
         )
         let transactions = (try? modelContext.fetch(txDescriptor)) ?? []
 
-        budgets = rawBudgets.compactMap { budget in
+        let filteredRawBudgets = rawBudgets.filter { budget in
+            if selectedPeriod == "weekly" {
+                guard budget.period == "weekly", let weekStart = budget.weekStartDate else { return false }
+                return calendar.isDate(weekStart, inSameDayAs: selectedWeekStart)
+            } else {
+                return budget.period == "monthly" && budget.month == selectedMonth && budget.year == selectedYear
+            }
+        }
+
+        budgets = filteredRawBudgets.compactMap { budget in
             guard let category = budget.category else { return nil }
 
             let spent = transactions
                 .filter { tx in
-                    tx.type == .expense &&
-                    tx.category?.id == category.id &&
-                    calendar.component(.month, from: tx.date) == selectedMonth &&
-                    calendar.component(.year, from: tx.date) == selectedYear
+                    guard tx.type == .expense && tx.category?.id == category.id else { return false }
+
+                    if selectedPeriod == "weekly" {
+                        guard let weekStart = budget.weekStartDate else { return false }
+                        let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+                        return tx.date >= weekStart && tx.date < weekEnd
+                    } else {
+                        return calendar.component(.month, from: tx.date) == selectedMonth &&
+                               calendar.component(.year, from: tx.date) == selectedYear
+                    }
                 }
                 .reduce(0.0) { $0 + $1.amount }
 
@@ -63,12 +81,18 @@ final class BudgetViewModel {
         totalSpent = budgets.reduce(0.0) { $0 + $1.spent }
     }
 
-    func addBudget(limit: Double, category: Category) {
-        // Cek dulu apakah budget untuk kategori ini sudah ada di bulan/tahun terpilih
+    func addBudget(limit: Double, category: Category, period: String = "monthly", weekStartDate: Date? = nil) {
         if let existing = budgets.first(where: { $0.category.id == category.id })?.budget {
             existing.limit = limit
         } else {
-            let budget = Budget(limit: limit, month: selectedMonth, year: selectedYear, category: category)
+            let budget = Budget(
+                limit: limit,
+                month: selectedMonth,
+                year: selectedYear,
+                period: period,
+                weekStartDate: weekStartDate,
+                category: category
+            )
             modelContext.insert(budget)
         }
         try? modelContext.save()
@@ -90,6 +114,11 @@ final class BudgetViewModel {
     func changePeriod(month: Int, year: Int) {
         self.selectedMonth = month
         self.selectedYear = year
+        refresh()
+    }
+
+    func changeWeek(weekStart: Date) {
+        self.selectedWeekStart = weekStart
         refresh()
     }
 }

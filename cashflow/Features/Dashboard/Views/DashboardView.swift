@@ -7,6 +7,9 @@ struct DashboardView: View {
     @State private var animatedBalance: Double = 0
     @State private var showAddTransaction: Bool = false
     @State private var showScanner: Bool = false
+    @State private var showAIAdvisor: Bool = false
+
+    @AppStorage("use_expense_only_mode") private var useExpenseOnlyMode: Bool = false
 
     private var userName: String {
         UserDefaults.standard.string(forKey: "user_name") ?? "Kamu"
@@ -37,9 +40,10 @@ struct DashboardView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("Cashflow")
-                        .font(.cashflowHeadline)
-                        .foregroundStyle(Color.textPrimary)
+                    Image("text-logo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 20)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: Spacing.s16) {
@@ -50,10 +54,10 @@ struct DashboardView: View {
                                 .foregroundStyle(Color.textSecondary)
                         }
 
-                        NavigationLink {
-                            ReportsView()
+                        Button {
+                            showAIAdvisor = true
                         } label: {
-                            Image(systemName: "chart.bar.fill")
+                            Image(systemName: "sparkles")
                                 .foregroundStyle(Color.textSecondary)
                         }
                     }
@@ -89,6 +93,10 @@ struct DashboardView: View {
             }) {
                 ReceiptScannerView()
             }
+            .sheet(isPresented: $showAIAdvisor) {
+                AIAdvisorView()
+            }
+
         }
         .task {
             if viewModel == nil {
@@ -97,17 +105,23 @@ struct DashboardView: View {
             viewModel?.refresh()
             animateBalance(to: viewModel?.totalBalance ?? 0)
         }
+        .onChange(of: useExpenseOnlyMode) { _, _ in
+            viewModel?.refresh()
+            if let bal = viewModel?.totalBalance {
+                animateBalance(to: bal)
+            }
+        }
     }
 
     private var balanceHeroCard: some View {
         VStack(alignment: .leading, spacing: Spacing.s8) {
-            Text("Saldo Kamu")
+            Text(useExpenseOnlyMode ? "Total Pengeluaran" : "Saldo Kamu")
                 .font(.cashflowSubheadline)
                 .foregroundStyle(Color.textSecondary)
 
             Text(animatedBalance.formatted(.currency(code: "IDR").presentation(.narrow)))
                 .font(.cashflowLargeTitle)
-                .foregroundStyle(Color.textPrimary)
+                .foregroundStyle(useExpenseOnlyMode ? Color.stateCritical : Color.textPrimary)
                 .cashflowMonospacedDigits()
                 .contentTransition(.numericText(countsDown: animatedBalance < (viewModel?.totalBalance ?? 0)))
                 .animation(.easeOut(duration: 0.5), value: animatedBalance)
